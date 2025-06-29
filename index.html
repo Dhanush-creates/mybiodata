@@ -6,3 +6,305 @@
     <title>Mr. Lelin - Portfolio</title>
     <link rel="stylesheet" href="style.css">
 </head>
+    
+<body>
+    <div class="container">
+        <!-- Photo Upload Modal -->
+        <div class="photo-modal" id="photoModal">
+            <div class="photo-content">
+                <h3>📸 Add Photo to Gallery</h3>
+                <p style="color: #666; margin-bottom: 20px;">Choose how you'd like to add your photo</p>
+                
+                <div class="upload-options">
+                    <div class="upload-option" onclick="triggerFileUpload()">
+                        <span style="font-size: 2em;">📁</span>
+                        <div><strong>Upload File</strong></div>
+                        <small>From your device</small>
+                    </div>
+                    <div class="upload-option" onclick="showUrlInput()">
+                        <span style="font-size: 2em;">🔗</span>
+                        <div><strong>Image URL</strong></div>
+                        <small>From the web</small>
+                    </div>
+                </div>
+
+                <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
+                
+                <div id="urlInputContainer" style="display: none;">
+                    <input type="url" class="url-input" id="imageUrl" placeholder="Paste image URL here..." onkeypress="handleUrlEnter(event)">
+                    <button class="photo-btn photo-upload" onclick="loadImageFromUrl()" style="margin-top: 10px;">🔗 Load Image</button>
+                </div>
+
+                <div id="imagePreview"></div>
+
+                <div id="imageDescriptionContainer" style="display: none; margin-top: 15px;">
+                    <label style="display: block; font-weight: bold; color: #ff8c00; margin-bottom: 5px;">Image Description (Optional):</label>
+                    <input type="text" id="imageDescription" placeholder="Enter description for this image..." style="width: 100%; padding: 10px; border: 2px solid #ff8c00; border-radius: 5px;">
+                    <small style="color: #666; display: block; margin-top: 5px;">This will be shown when hovering over the image</small>
+                </div>
+
+                <div class="photo-buttons">
+                    <button class="photo-btn photo-upload" id="confirmBtn" onclick="confirmPhoto()" style="display: none;">✅ Add Photo</button>
+                    <button class="photo-btn photo-cancel" onclick="closePhotoModal()">❌ Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Modal -->
+        <div class="password-modal" id="passwordModal">
+            <div class="password-content">
+                <h3>🔐 Authentication Required</h3>
+                <p style="color: #666; margin-bottom: 20px;">Please enter the password to edit profile and upload photos</p>
+                <input type="password" class="password-input" id="passwordInput" placeholder="Enter password" onkeypress="handlePasswordEnter(event)">
+                <div class="error-message" id="errorMessage">Incorrect password! Please try again.</div>
+                <div class="password-buttons">
+                    <button class="password-btn password-submit" onclick="checkPassword()">🔓 Unlock</button>
+                    <button class="password-btn password-cancel" onclick="closePasswordModal()">❌ Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo" onclick="toggleEditMode()">LELIN</div>
+            <nav class="nav-menu">
+                <button class="nav-btn active" onclick="showSection('home')">HOME</button>
+                <button class="nav-btn" onclick="showSection('about')">ABOUT</button>
+                <button class="nav-btn" onclick="showSection('portfolio')">PORTFOLIO</button>
+                <button class="nav-btn" onclick="showSection('gallery')">GALLERY</button>
+                <button class="nav-btn" onclick="showSection('contact')">CONTACT</button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Edit Panel -->
+            <div class="edit-panel" id="editPanel">
+                <h3 style="color: #ff8c00; margin-bottom: 20px;">✏️ Edit Profile & Photos</h3>
+                
+                <div class="edit-group">
+                    <label>Name:</label>
+                    <input type="text" id="editName" placeholder="Enter your full name">
+                </div>
+                <div class="edit-group">
+                    <label>Job Title:</label>
+                    <input type="text" id="editTitle" placeholder="Enter your job title">
+                </div>
+                <div class="edit-group">
+                    <label>Professional Tagline:</label>
+                    <input type="text" id="editTagline" placeholder="Enter your professional tagline">
+                </div>
+                <div class="edit-group">
+                    <label>About Description:</label>
+                    <textarea id="editDescription" placeholder="Write about yourself and your professional background"></textarea>
+                </div>
+
+                <!-- Gallery Management Section -->
+                <div class="gallery-management">
+                    <h4>📸 Gallery Management</h4>
+                    <p style="color: #666; margin-bottom: 15px; font-size: 14px;">Manage your gallery photos (password protected)</p>
+                    <div class="gallery-buttons">
+                        <button class="gallery-edit-btn" onclick="editGalleryPhoto(0)">Edit Photo 1</button>
+                        <button class="gallery-edit-btn" onclick="editGalleryPhoto(1)">Edit Photo 2</button>
+                        <button class="gallery-edit-btn" onclick="editGalleryPhoto(2)">Edit Photo 3</button>
+                        <button class="gallery-edit-btn" onclick="editGalleryPhoto(3)">Edit Photo 4</button>
+                        <button class="gallery-edit-btn" onclick="editGalleryPhoto(4)">Edit Photo 5</button>
+                        <button class="gallery-edit-btn" onclick="editGalleryPhoto(5)">Edit Photo 6</button>
+                        <button class="gallery-edit-btn" onclick="editGalleryPhoto(6)">Edit Photo 7</button>
+                        <button class="gallery-edit-btn" onclick="editGalleryPhoto(7)">Edit Photo 8</button>
+                    </div>
+                </div>
+
+                <div class="edit-buttons">
+                    <button class="edit-btn save-btn" onclick="saveChanges()">💾 Save Changes</button>
+                    <button class="edit-btn cancel-btn" onclick="cancelEdit()">❌ Cancel</button>
+                </div>
+            </div>
+
+            <!-- Home Section -->
+            <section class="content-section active" id="homeSection">
+                <div class="home-section">
+                    <div class="profile-container">
+                        <div class="profile-photo" id="profilePhoto">
+                        </div>
+                        <div style="color: #ff8c00; font-weight: bold; font-size: 1.2em;">Profile Photo</div>
+                    </div>
+                    <div class="profile-info">
+                        <h1 id="displayName">Mr.Lelin</h1>
+                        <h2 id="displayTitle">Senior R&D Executive</h2>
+                        <div class="tagline" id="displayTagline">"Innovating Tomorrow's Technology Today"</div>
+                        <div class="description" id="displayDescription">
+                            Welcome to my professional portfolio. I am a dedicated R&D executive with extensive experience in technology innovation, product development, and strategic planning. My passion lies in transforming innovative ideas into practical solutions that drive business growth and technological advancement.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section class="content-section" id="aboutSection">
+                <h2>About Me</h2>
+                <p>I am a passionate Senior R&D Executive with over 10 years of experience in driving technological innovation and leading high-performing teams. My expertise spans across multiple domains including artificial intelligence, machine learning, software development, and strategic technology planning.</p>
+                
+                <h3>Professional Experience</h3>
+                <p>Throughout my career, I have successfully led numerous projects from conception to implementation, consistently delivering innovative solutions that have significantly impacted business outcomes. I specialize in identifying emerging technologies and translating them into practical applications that drive competitive advantage.</p>
+                
+                <h3>Core Competencies</h3>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <strong>Technology Innovation</strong>
+                        <p>Leading cutting-edge research and development initiatives</p>
+                    </div>
+                    <div class="skill-item">
+                        <strong>Team Leadership</strong>
+                        <p>Managing cross-functional teams and driving collaboration</p>
+                    </div>
+                    <div class="skill-item">
+                        <strong>Strategic Planning</strong>
+                        <p>Developing long-term technology roadmaps and strategies</p>
+                    </div>
+                    <div class="skill-item">
+                        <strong>Product Development</strong>
+                        <p>From ideation to market launch of innovative products</p>
+                    </div>
+                </div>
+
+                <h3>Education & Certifications</h3>
+                <p>• Master's in Computer Science - Technology University<br>
+                • Certified Project Management Professional (PMP)<br>
+                • Advanced Leadership in Technology Innovation<br>
+                • Machine Learning Specialization Certificate</p>
+            </section>
+
+            <!-- Portfolio Section -->
+            <section class="content-section" id="portfolioSection">
+                <h2>Portfolio</h2>
+                <p>Here are some of the key projects and achievements that showcase my expertise in technology innovation and leadership.</p>
+                
+                <div class="portfolio-grid">
+                    <div class="portfolio-item">
+                        <h3>AI-Powered Analytics Platform</h3>
+                        <p>Led the development of a comprehensive analytics platform that increased data processing efficiency by 300%. The platform now serves over 10,000 users globally.</p>
+                        <p><strong>Technologies:</strong> Python, TensorFlow, React, AWS</p>
+                    </div>
+                    <div class="portfolio-item">
+                        <h3>Smart IoT Infrastructure</h3>
+                        <p>Designed and implemented a scalable IoT infrastructure for smart city applications, reducing operational costs by 40% and improving service delivery.</p>
+                        <p><strong>Technologies:</strong> IoT, Cloud Computing, Edge AI</p>
+                    </div>
+                    <div class="portfolio-item">
+                        <h3>Mobile Innovation Lab</h3>
+                        <p>Established a mobile innovation lab that has produced 15+ successful mobile applications with over 1 million downloads combined.</p>
+                        <p><strong>Technologies:</strong> React Native, Flutter, Node.js</p>
+                    </div>
+                    <div class="portfolio-item">
+                        <h3>Blockchain Security Solution</h3>
+                        <p>Developed a blockchain-based security solution for financial institutions, enhancing transaction security and reducing fraud by 85%.</p>
+                        <p><strong>Technologies:</strong> Blockchain, Ethereum, Smart Contracts</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gallery Section -->
+            <section class="content-section" id="gallerySection">
+                <h2>Gallery</h2>
+                <p>A visual showcase of my work, achievements, and professional journey.</p>
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #ff8c00;">
+                    <p style="color: #856404; margin: 0; font-weight: 500;">🔒 <strong>Secure Gallery:</strong> Photos can only be uploaded through password-protected editing mode. Click "LELIN" in the header to login and manage photos.</p>
+                </div>
+                
+                <div class="gallery-grid" id="galleryGrid">
+                    <div class="gallery-item">
+                        <span>Professional Gallery</span>
+                        <div class="gallery-overlay">
+                            🔒 Login to add photos
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <span>Achievement Gallery</span>
+                        <div class="gallery-overlay">
+                            🔒 Login to add photos
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <span>Project Gallery</span>
+                        <div class="gallery-overlay">
+                            🔒 Login to add photos
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <span>Event Gallery</span>
+                        <div class="gallery-overlay">
+                            🔒 Login to add photos
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <span>Team Gallery</span>
+                        <div class="gallery-overlay">
+                            🔒 Login to add photos
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <span>Innovation Gallery</span>
+                        <div class="gallery-overlay">
+                            🔒 Login to add photos
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <span>Conference Gallery</span>
+                        <div class="gallery-overlay">
+                            🔒 Login to add photos
+                        </div>
+                    </div>
+                    <div class="gallery-item">
+                        <span>Award Gallery</span>
+                        <div class="gallery-overlay">
+                            🔒 Login to add photos
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section class="content-section" id="contactSection">
+                <h2>Contact Me</h2>
+                <p>I'm always interested in discussing new opportunities, innovative projects, and potential collaborations. Feel free to reach out!</p>
+                
+                <div class="contact-form">
+                    <form onsubmit="handleContact(event)">
+                        <div class="form-group">
+                            <label>Name *</label>
+                            <input type="text" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Company</label>
+                            <input type="text" name="company">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject *</label>
+                            <input type="text" name="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Message *</label>
+                            <textarea name="message" rows="6" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center; color: #666;">
+                    <h3 style="color: #ff8c00;">Professional Contact Information</h3>
+                    <p>📧 Email: mr.lelin@innovation.com</p>
+                    <p>📱 Phone: +1 (555) 123-4567</p>
+                    <p>🌐 LinkedIn: linkedin.com/in/mrlelin</p>
+                    <p>📍 Location: Silicon Valley, CA</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
